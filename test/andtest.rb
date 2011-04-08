@@ -1,5 +1,3 @@
-require "network"
-
 network = Network.new(2,1,2)
 n = 1000000
 p = n / 10
