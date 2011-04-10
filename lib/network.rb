@@ -1,12 +1,13 @@
 class Network
 
-  attr_accessor :learningrate, :inputs
+  attr_accessor :learningrate, :momentum, :inputs
 
   def initialize(numInputs, numOutputs, numLayers)
 
     @layers = Array.new
     @inputs = Array.new
-    @learningrate = 0.15
+    @learningrate = 0.90
+    @momentum = 0.001
     @biasNeuron = Neuron.new(Sigmoid.new)
     @biasNeuron.output = 1.0
 
@@ -50,7 +51,6 @@ class Network
       end # neuron
     end # layer index
 
-
     # load last layers error
     @layers.last.neurons.each_with_index do |neuron, i|
       neuron.error = outputerror[i]
@@ -65,7 +65,11 @@ class Network
         neuron.dendrites.each do |dendrite|
           dendrite.neuron.error += localgradient * dendrite.weight
           delta_w = @learningrate * localgradient * dendrite.neuron.output
-          dendrite.weight = dendrite.weight + delta_w # 0.8 is the momentum
+          # always move at least 0.001 in the target direction
+          delta_w +=  (localgradient<=>0.0)*(dendrite.neuron.output<=>0.0)*0.0001
+          # utilize momentum to reduce oscillation and speed convergence
+          delta_w += @momentum * dendrite.lastweight
+          dendrite.weight = dendrite.weight + delta_w
         end # dendrite
       end # neuron
     end # layer index
