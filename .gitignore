@@ -2,6 +2,6 @@
 .bundle
 Gemfile.lock
 pkg/*
-nuero.png
-nuero.svg
+neuro.png
+neuro.svg
 convergence.html
