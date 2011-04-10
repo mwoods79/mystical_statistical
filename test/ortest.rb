@@ -1,4 +1,5 @@
 network = Network.new(2,1,3)
+network.learningrate = 0.5
 n = 2000
 p = n / 10
 plot = n / 20
@@ -11,36 +12,37 @@ errorY01 = Array.new
 avgError = 1.0
 i = 0
 while (i < n and avgError > 0)
-  outputvals00 = network.run([0,0])
-  network.train(outputvals00, [0])
-
-  outputvals10 = network.run([1,0])
-  network.train(outputvals10, [0])
-
-  outputvals11 = network.run([1,1])
-  network.train(outputvals11, [1])
-
-  outputvals01 = network.run([0,1])
-  network.train(outputvals01, [0])
-
+  
+  outputvals00 = network.run([0.0,0.0])
+  network.train(outputvals00, [0.0])
+  
+  outputvals10 = network.run([1.0,0.0])
+  network.train(outputvals10, [1.0])
+  
+  outputvals11 = network.run([1.0,1.0])
+  network.train(outputvals11, [1.0])
+  
+  outputvals01 = network.run([0.0,1.0])
+  network.train(outputvals01, [1.0])
+  
   error00=0.0-outputvals00[0]
-  error10=0.0-outputvals10[0]
+  error10=1.0-outputvals10[0]
   error11=1.0-outputvals11[0]
-  error01=0.0-outputvals01[0]
-
+  error01=1.0-outputvals01[0]
+  
   avgError = (error00.abs + error10.abs + error11.abs + error01.abs).to_f
   avgError = avgError/4.0
-
-  if ((i % plot)  == 0) then
+  
+  if ((i % plot)  == 0) then  
     errorX.push(i)
     errorY00.push(error00)
     errorY10.push(error10)
     errorY11.push(error11)
     errorY01.push(error01)
   end
-
-  if ((i % p)  == 0) then
-    puts " 0,0 = #{outputvals00[0]} "
+   
+  if ((i % p)  == 0) then 
+    puts " 0,0 = #{outputvals00[0]} " 
     puts " 0,1 = #{outputvals01[0]} "
     puts " 1,0 = #{outputvals10[0]} "
     puts " 1,1 = #{outputvals11[0]} "
@@ -56,8 +58,8 @@ lines = [errorY00, errorY10, errorY11, errorY01]
 chart = NeuroChart.new(errorX, lines)
 chart.createSVGChart
 
-puts 'Logical AND test'
-puts '0 AND 0 = ' + network.run([0,0])[0].to_s
-puts '0 AND 1 = ' + network.run([0,1])[0].to_s
-puts '1 AND 0 = ' + network.run([1,0])[0].to_s
-puts '1 AND 1 = ' + network.run([1,1])[0].to_s
+puts 'Logical OR test'
+puts '0 OR 0 = ' + network.run([0,0])[0].to_s
+puts '0 OR 1 = ' + network.run([0,1])[0].to_s
+puts '1 OR 0 = ' + network.run([1,0])[0].to_s
+puts '1 OR 1 = ' + network.run([1,1])[0].to_s

@@ -1,14 +1,15 @@
 class Input
-  attr_accessor :value, :weight, :neuron
+  attr_accessor :value, :weight, :neuron, :lastweight
 
   def initialize()
     @neuron = Neuron.new(Sigmoid.new)
-    @weight = (rand*1.0)-0.5
+    @weight = (rand*2.0)-1.0
+    @lastweight = 0.0
   end
 
   def weight=(value)
+    @lastweight = @weight
     @weight = value
-    #puts "Input W set to #{value}"
   end
 
   def read
