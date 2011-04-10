@@ -6,7 +6,7 @@ class Network
 
     @layers = Array.new
     @inputs = Array.new
-    @learningrate = 0.2
+    @learningrate = 0.15
     @biasNeuron = Neuron.new(Sigmoid.new)
     @biasNeuron.output = 1.0
 
@@ -16,7 +16,7 @@ class Network
       numNeurons = case n
         when 1 then numInputs
         when numLayers then numOutputs
-        else numInputs + 1
+        else numInputs + 2
       end
 
       numNeurons.times do |n|
@@ -30,12 +30,6 @@ class Network
 
     end
     @layers.first.attachInput
-
-    #@layers.first.neurons.each do |neuron|
-    #    neuron.dendrites.each do |dendrite|
-    #    @inputs.push(dendrite)
-    #  end
-    #end
 
     @inputs.concat((@layers.first.neurons.map { |neuron| neuron.dendrites}).flatten)
 
@@ -64,20 +58,43 @@ class Network
 
     # start at output layer and propogate gradient back to input
     (@layers.length-1).downto(0) do |i|
-      #puts 'train layer ' + i.to_s
       @layers[i].neurons.each do |neuron|
         # each output neuron computes local gradient - error * dirivative of activation
         localgradient = neuron.error * neuron.activation.derivative(neuron.input)
-        #puts "Local gradient #{localgradient}"
         # use local gradient to compute each parent neurons output error
         neuron.dendrites.each do |dendrite|
           dendrite.neuron.error += localgradient * dendrite.weight
           delta_w = @learningrate * localgradient * dendrite.neuron.output
-          dendrite.weight = dendrite.weight * 0.8 + delta_w # 0.8 is the momentum
+          dendrite.weight = dendrite.weight + delta_w # 0.8 is the momentum
         end # dendrite
       end # neuron
     end # layer index
 
+  end
+  
+  def toGraphViz
+    g = GraphViz::new( "G" )
+    prevLayer = Array.new
+    
+    @layers.first.neurons.each_with_index do |neuron, j|
+      prevLayer.push(g.add_node("N_0_#{j}"))
+    end
+    
+    1.upto(@layers.length-1) do |i|
+      currentLayer = Array.new
+      @layers[i].neurons.each_with_index do |neuron, j|
+        newNode = g.add_node("N_#{i}_#{j}")
+        currentLayer.push(newNode)
+        prevLayer.each_with_index do |node, i|
+          weight = neuron.dendrites[i].weight
+          g.add_edge(node, newNode, :label => "#{weight}")
+        end # previous layer nodes
+      end # current layer neuron
+      prevLayer = currentLayer
+    end # layer index
+
+    g.output( :png => "#{$0}.png" )
+    g.save( :svg => "#{$0}.svg" )
   end
 
   def run(inputs)
