@@ -1,5 +1,5 @@
 class NeuroChart
-  
+
   def initialize(xVals, lineYs)
     @xVals = xVals
     @lineYs = lineYs
@@ -7,7 +7,7 @@ class NeuroChart
   end
 
   def createSVGChart
-    
+
     colorList = @colors[0,@lineYs.length]
     #puts colorList.to_a
     ycsv = "["
@@ -19,23 +19,23 @@ class NeuroChart
       end
       ycsv += "]"
       ycsv += "," if (@lineYs.length-1>i)
-    end  
+    end
     ycsv += "]"
     #puts ycsv
-    
+
     xcsv = "["
     xcsv += CSV.generate do |csv|
       csv << @xVals
     end
     xcsv += "]"
     #puts xcsv
-    
+
     colorcsv = "["
     colorcsv += CSV.generate do |csv|
       csv << @colors
     end
     colorcsv += "]"
-    
+
     html = '<html>
         <head>
             <title>Convergence chart</title>
@@ -49,7 +49,7 @@ class NeuroChart
 
                 // Creates a simple line chart at 10, 10
                 // width 800, height 600
-                var linec = r.g.linechart(40,20,700,390,' + xcsv + ',' + ycsv + ', 
+                var linec = r.g.linechart(40,20,700,390,' + xcsv + ',' + ycsv + ',
                   {"colors":' + colorcsv + ', "symbol":"s", axis:"0 0 1 1"}
                 );
       				  linec.hover(function() {
@@ -60,15 +60,15 @@ class NeuroChart
               }
             </script>
         </head>
-        <body>  
-          <div id="holder" style="width:800px;height:480px;border:1px dashed #CCC;"> 
+        <body>
+          <div id="holder" style="width:800px;height:480px;border:1px dashed #CCC;">
         </body>
     </html>'
-    
+
     File.open("convergence.html", 'w+') {|f| f.write(html) }
 
     system("open convergence.html") #...on windows
-    
+
   end
-  
+
 end
