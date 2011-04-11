@@ -7,12 +7,13 @@ class NeuroChart
   end
 
   def createSVGChart
-    ycsv = ""
+    ycsv = "["
     @lineYs.each do |line|
       ycsv += simple_csv line
       ycsv += ","
     end
     ycsv.chop! # cuts the last character off a string
+    ycsv += "]"
 
     xcsv = simple_csv @xVals
 
