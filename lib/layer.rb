@@ -17,7 +17,7 @@ class Layer
 
   def attachInput
     @neurons.each_with_index do |n|
-        n.addDendrite(Input.new)
+      n.addDendrite(Input.new)
     end
   end
 

@@ -36,39 +36,26 @@ class NeuroChart
     end
     colorcsv += "]"
 
-    html = '<html>
-        <head>
-            <title>Convergence chart</title>
-            <script  type="text/javascript" src="http://raphaeljs.com/raphael.js"></script>
-            <script type="text/javascript"  src="http://g.raphaeljs.com/g.raphael.js"></script>
-            <script type="text/javascript"  src="http://g.raphaeljs.com/g.line.js"></script>
-            <script type="text/javascript">
-              window.onload = function() {
-                // Creates canvas 320 x 300 at 10, 50
-                var r = Raphael("holder");
+    display_in_browser "convergence.html"
 
-                // Creates a simple line chart at 10, 10
-                // width 800, height 600
-                var linec = r.g.linechart(40,20,700,390,' + xcsv + ',' + ycsv + ',
-                  {"colors":' + colorcsv + ', "symbol":"s", axis:"0 0 1 1"}
-                );
-      				  linec.hover(function() {
-          					this.symbol.attr({"fill":"#CCC"});
-          				}, function() {
-          					this.symbol.attr({"fill":"#444"});
-                });
-              }
-            </script>
-        </head>
-        <body>
-          <div id="holder" style="width:800px;height:480px;border:1px dashed #CCC;">
-        </body>
-    </html>'
+  end
 
-    File.open("convergence.html", 'w+') {|f| f.write(html) }
+  def display_in_browser(file_name)
+    create_html file_name
+    open_in_browser file_name
+  end
 
-    system("open convergence.html") #...on windows
+  def create_html(file_name)
+    `echo #{get_template(file_name)} > #{file_name}`
+  end
 
+  def open_in_browser(file_name)
+    `open #{file_name}`
+  end
+
+  def get_template( name, this_binding = nil )
+    erb = ERB.new(File.read(File.dirname(__FILE__) + "/templates/#{name}.erb"))
+    erb.result this_binding
   end
 
 end
