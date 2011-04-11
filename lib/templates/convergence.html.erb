@@ -11,8 +11,8 @@
 
         // Creates a simple line chart at 10, 10
         // width 800, height 600
-        var linec = r.g.linechart(40,20,700,390,' + xcsv + ',' + ycsv + ',
-            {"colors":' + colorcsv + ', "symbol":"s", axis:"0 0 1 1"}
+        var linec = r.g.linechart(40,20,700,390,<%= xcsv %>,<%= ycsv %>,
+            {"colors": <%= colorcsv %>, "symbol":"s", axis:"0 0 1 1"}
             );
         linec.hover(function() {
             this.symbol.attr({"fill":"#CCC"});

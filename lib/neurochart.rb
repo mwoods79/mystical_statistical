@@ -7,46 +7,33 @@ class NeuroChart
   end
 
   def createSVGChart
-
-    colorList = @colors[0,@lineYs.length]
-    #puts colorList.to_a
-    ycsv = "["
-    @lineYs.each_with_index do |line,i|
-      ycsv += "["
-      ycsv += CSV.generate do |csv|
-        #puts line
-        csv << line
-      end
-      ycsv += "]"
-      ycsv += "," if (@lineYs.length-1>i)
+    ycsv = ""
+    @lineYs.each do |line|
+      ycsv += simple_csv line
+      ycsv += ","
     end
-    ycsv += "]"
-    #puts ycsv
+    ycsv.chop! # cuts the last character off a string
 
-    xcsv = "["
-    xcsv += CSV.generate do |csv|
-      csv << @xVals
-    end
-    xcsv += "]"
-    #puts xcsv
+    xcsv = simple_csv @xVals
 
-    colorcsv = "["
-    colorcsv += CSV.generate do |csv|
-      csv << @colors
-    end
-    colorcsv += "]"
+    colorcsv = simple_csv @colors
 
-    display_in_browser "convergence.html"
-
+    display_in_browser "convergence.html", binding
   end
 
-  def display_in_browser(file_name)
-    create_html file_name
+  def simple_csv(array)
+    "[#{array.to_csv.chomp}]"
+  end
+
+  def display_in_browser(file_name, this_binding = nil)
+    create_html file_name, this_binding
     open_in_browser file_name
   end
 
-  def create_html(file_name)
-    `echo #{get_template(file_name)} > #{file_name}`
+  def create_html(file_name, this_binding = nil)
+    File.open(File.dirname(__FILE__) + "/../#{file_name}", 'w' ) do |f|
+      f.write get_template( file_name, this_binding )
+    end
   end
 
   def open_in_browser(file_name)
@@ -59,3 +46,4 @@ class NeuroChart
   end
 
 end
+
