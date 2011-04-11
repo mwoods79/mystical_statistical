@@ -15,10 +15,10 @@ class Network
       neurons = Array.new
 
       numNeurons = case n
-        when 1 then numInputs
-        when numLayers then numOutputs
-        else numInputs + 2
-      end
+                   when 1 then numInputs
+                   when numLayers then numOutputs
+                   else numInputs + 2
+                   end
 
       numNeurons.times do |n|
         neurons.push(Neuron.new(Sigmoid.new))
@@ -45,7 +45,7 @@ class Network
     # clear error pass
     (@layers.length-1).downto(0) do |i|
       @layers[i].neurons.each do |neuron|
-       neuron.dendrites.each do |dendrite|
+        neuron.dendrites.each do |dendrite|
           dendrite.neuron.error = 0.0
         end # dendrite
       end # neuron
@@ -75,15 +75,15 @@ class Network
     end # layer index
 
   end
-  
+
   def toGraphViz
     g = GraphViz::new( "G" )
     prevLayer = Array.new
-    
+
     @layers.first.neurons.each_with_index do |neuron, j|
       prevLayer.push(g.add_node("N_0_#{j}"))
     end
-    
+
     1.upto(@layers.length-1) do |i|
       currentLayer = Array.new
       @layers[i].neurons.each_with_index do |neuron, j|

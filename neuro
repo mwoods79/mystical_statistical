@@ -6,5 +6,6 @@ end
 require "matrix"
 require "graphviz"
 require "csv"
+require 'erb'
 
 require "#{Dir.pwd}/test/andtest.rb"

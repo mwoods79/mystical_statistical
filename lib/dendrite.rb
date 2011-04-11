@@ -11,7 +11,7 @@ class Dendrite
     @lastweight = @weight
     @weight = value
   end
-  
+
   def read
     @neuron.output * @weight
   end

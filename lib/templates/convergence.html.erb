@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title>Convergence chart</title>
+    <script  type="text/javascript" src="http://raphaeljs.com/raphael.js"></script>
+    <script type="text/javascript"  src="http://g.raphaeljs.com/g.raphael.js"></script>
+    <script type="text/javascript"  src="http://g.raphaeljs.com/g.line.js"></script>
+    <script type="text/javascript">
+      window.onload = function() {
+        // Creates canvas 320 x 300 at 10, 50
+        var r = Raphael("holder");
+
+        // Creates a simple line chart at 10, 10
+        // width 800, height 600
+        var linec = r.g.linechart(40,20,700,390,<%= xcsv %>,<%= ycsv %>,
+            {"colors": <%= colorcsv %>, "symbol":"s", axis:"0 0 1 1"}
+            );
+        linec.hover(function() {
+            this.symbol.attr({"fill":"#CCC"});
+            }, function() {
+            this.symbol.attr({"fill":"#444"});
+            });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="holder" style="width:800px;height:480px;border:1px dashed #CCC;">
+  </body>
+</html>
