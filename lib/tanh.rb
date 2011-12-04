@@ -1,7 +1,11 @@
 class Tanh
+  #def function(weightedVals)
+  #  exp2x = Math.exp(weightedVals * 2.0)
+  #  (exp2x - 1.0) / (exp2x + 1.0);
+  #end
+  
   def function(weightedVals)
-    exp2x = Math.exp(weightedVals * 2.0)
-    (exp2x - 1.0) / (exp2x + 1.0);
+    Math.tanh(weightedVals)
   end
 
   def derivative(weightedVals)

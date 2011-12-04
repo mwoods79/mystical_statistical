@@ -1,6 +1,6 @@
 class Network
 
-  attr_accessor :learningrate, :momentum, :inputs
+  attr_accessor :learningrate, :momentum, :inputs, :min_move
 
   def initialize(numInputs, numOutputs, numLayers)
 
@@ -10,6 +10,7 @@ class Network
     @momentum = 0.001
     @biasNeuron = Neuron.new(Sigmoid.new)
     @biasNeuron.output = 1.0
+    @min_move = 0.0
 
     1.upto(numLayers) do |n|
       neurons = Array.new
@@ -19,9 +20,13 @@ class Network
                    when numLayers then numOutputs
                    else numInputs + 2
                    end
-
+      
       numNeurons.times do |n|
-        neurons.push(Neuron.new(Sigmoid.new))
+        num = Random.rand(2)
+        puts num
+        function = Sigmoid.new if num == 0
+        function = Tanh.new if num == 1
+        neurons.push(Neuron.new(function))
       end
 
       layer = Layer.new(neurons, @biasNeuron)
@@ -66,7 +71,7 @@ class Network
           dendrite.neuron.error += localgradient * dendrite.weight
           delta_w = @learningrate * localgradient * dendrite.neuron.output
           # always move at least 0.001 in the target direction
-          delta_w +=  (localgradient<=>0.0)*(dendrite.neuron.output<=>0.0)*0.0001
+          delta_w +=  (localgradient<=>0.0)*(dendrite.neuron.output<=>0.0)*@min_move
           # utilize momentum to reduce oscillation and speed convergence
           delta_w += @momentum * dendrite.lastweight
           dendrite.weight = dendrite.weight + delta_w
@@ -81,13 +86,13 @@ class Network
     prevLayer = Array.new
 
     @layers.first.neurons.each_with_index do |neuron, j|
-      prevLayer.push(g.add_node("N_0_#{j}"))
+      prevLayer.push(g.add_node("N_0_#{j}_#{neuron.activation.class}"))
     end
 
     1.upto(@layers.length-1) do |i|
       currentLayer = Array.new
       @layers[i].neurons.each_with_index do |neuron, j|
-        newNode = g.add_node("N_#{i}_#{j}")
+        newNode = g.add_node("N_#{i}_#{j}_#{neuron.activation.class}")
         currentLayer.push(newNode)
         prevLayer.each_with_index do |node, i|
           weight = neuron.dendrites[i].weight
